@@ -1,24 +1,21 @@
 package com.example.springproject.student;
 
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 
 // service layer
 @Service
+@AllArgsConstructor
 public class StudentService {
-
+    @Autowired
     private static StudentRepository studentRepository;
 
-    @Autowired
-    public StudentService(StudentRepository studentRepository) {
-        this.studentRepository = studentRepository;
-    }
 
 
     public static List<Student> getStudents() {
@@ -49,25 +46,18 @@ public class StudentService {
 
     @Transactional
     public void updateStudent(Long studentId,
-                              String name,
-                              String email) {
-        Student student = studentRepository.findById(studentId)
+                              Student student) {
+        Student updateStudent = studentRepository.findById(studentId)
                 .orElseThrow(() -> new IllegalStateException(
                         "student with id " + studentId + " does not exists"));
-        if(name != null && name.length()>0 &&
-                !Objects.equals(student.getName(),name)) {
-                student.setName(name);
-        }
-        else {
-            throw new IllegalStateException("Please provide name or email");
-        }
-        if(email != null && email.length()>0 &&
-        !Objects.equals(student.getEmail(),email)) {
-            if(studentRepository.findStudentByEmail(email).isPresent()) {
-                throw  new IllegalStateException("email taken");
-            }
 
-            student.setEmail(email);
-        }
+        updateStudent.setName(student.getName());
+        updateStudent.setEmail(student.getEmail());
+        updateStudent.setDob(student.getDob());
+        updateStudent.setAge(student.getAge());
+
+        studentRepository.save(updateStudent);
+
+
     }
 }

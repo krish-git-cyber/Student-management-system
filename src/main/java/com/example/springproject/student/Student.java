@@ -7,9 +7,8 @@ import java.time.LocalDate;
 import java.time.Period;
 
 @Entity
-@Table
 @Data
-
+@Table
 public class Student {
     @Id
     @SequenceGenerator(
@@ -25,6 +24,7 @@ public class Student {
     private String name;
     private String email;
     private LocalDate dob;
+
     @Transient
     private Integer age;
 
